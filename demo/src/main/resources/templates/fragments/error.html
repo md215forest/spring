@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<th:block th:fragment="error(title,msg)">
+    <body>
+    <div class="p-404">
+        <div class="l-container">
+            <h1 class="p-404__title" th:text="${title}">404 Not Found</h1>
+            <p class="p-404__des" th:text="${msg}">ページが見つかりません。</p>
+            <a th:if="${title == '403 Forbidden'}" class="p-404__link" th:href="@{/login}">ログインページ</a>
+            <a th:unless="${title == '403 Forbidden'}" class="p-404__link" th:href="@{/}">トップページ</a>
+        </div>
+    </div>
+    </body>
+</th:block>

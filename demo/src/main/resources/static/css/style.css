@@ -1,0 +1,13 @@
+.health-care-work-check-modal__inner {
+    display: block;
+    text-align: center;
+}
+
+.health-care-work-check-modal__button-area {
+    display: flex;
+    margin-top: 30px;
+}
+
+.health-care-work-check-modal__button {
+    margin-left: 10px;
+}

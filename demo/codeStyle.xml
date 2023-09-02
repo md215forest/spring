@@ -1,0 +1,59 @@
+<code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
+        <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
+        <option name="JD_ALIGN_PARAM_COMMENTS" value="false" />
+        <option name="JD_ALIGN_EXCEPTION_COMMENTS" value="false" />
+        <option name="JD_ADD_BLANK_AFTER_DESCRIPTION" value="false" />
+        <option name="JD_DO_NOT_WRAP_ONE_LINE_COMMENTS" value="true" />
+    </JavaCodeStyleSettings>
+    <MySQLCodeStyleSettings version="6">
+        <option name="USE_GENERAL_STYLE" value="false" />
+        <option name="KEYWORD_CASE" value="2" />
+        <option name="IDENTIFIER_CASE" value="1" />
+        <option name="TYPE_CASE" value="2" />
+        <option name="CUSTOM_TYPE_CASE" value="0" />
+        <option name="ALIAS_CASE" value="1" />
+        <option name="BUILT_IN_CASE" value="2" />
+        <option name="QUOTED_IDENTIFIER_CASE" value="1" />
+        <option name="QUERY_EL_LINE" value="101" />
+        <option name="QUERY_EL_COMMA" value="1" />
+        <option name="QUERY_ALIGN_ELEMENTS" value="false" />
+        <option name="QUERY_ALIGN_LINE_COMMENTS" value="false" />
+        <option name="SUBQUERY_OPENING" value="1" />
+        <option name="SUBQUERY_CONTENT" value="2" />
+        <option name="SUBQUERY_CLOSING" value="2" />
+        <option name="INSERT_INTO_NL" value="1" />
+        <option name="INSERT_EL_WRAP" value="2" />
+        <option name="SET_EL_LINE" value="101" />
+        <option name="SET_ALIGN_EQUAL_SIGN" value="false" />
+        <option name="SELECT_ALIGN_AS" value="false" />
+        <option name="FROM_WRAP_ON" value="true" />
+        <option name="FROM_INDENT_JOIN" value="false" />
+        <option name="FROM_PLACE_ON" value="11" />
+        <option name="WHERE_EL_LINE" value="101" />
+        <option name="ORDER_EL_WRAP" value="1" />
+        <option name="TABLE_OPENING" value="1" />
+        <option name="TABLE_CONTENT" value="2" />
+        <option name="TABLE_CLOSING" value="0" />
+        <option name="TABLE_TYPES_ALIGN" value="false" />
+        <option name="TABLE_DEFAULTS_ALIGN" value="false" />
+        <option name="TABLE_NULLABILITIES_ALIGN" value="false" />
+        <option name="VIEW_INDENT_QUERY" value="true" />
+        <option name="ROUTINE_ARG_WRAP" value="0" />
+        <option name="ROUTINE_ARG_COMMA" value="1" />
+        <option name="IMP_IF_THEN_COLLAPSE" value="false" />
+        <option name="IMP_LOOP_LOOP_WRAP" value="false" />
+        <option name="EXPR_BINARY_OP_ALIGN" value="false" />
+        <option name="EXPR_CASE_END" value="1" />
+    </MySQLCodeStyleSettings>
+    <codeStyleSettings language="JAVA">
+        <option name="KEEP_SIMPLE_LAMBDAS_IN_ONE_LINE" value="true" />
+        <option name="IF_BRACE_FORCE" value="3" />
+        <option name="DOWHILE_BRACE_FORCE" value="3" />
+        <option name="WHILE_BRACE_FORCE" value="3" />
+        <option name="VARIABLE_ANNOTATION_WRAP" value="2" />
+        <option name="ENUM_CONSTANTS_WRAP" value="2" />
+        <option name="WRAP_ON_TYPING" value="0" />
+    </codeStyleSettings>
+</code_scheme>

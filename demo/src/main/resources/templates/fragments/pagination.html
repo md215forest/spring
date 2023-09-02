@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:if="${1 lt page.totalPages}" th:fragment="pagination(page, url)"
+          th:with="currentPage = ${page.number + 1}, lastPage = ${page.totalPages}">
+    <ul class="c-paging u-mt60 u-mt--sp40">
+        <li class="c-paging__item">
+            <a class="c-paging__link is-prev" th:if="${currentPage ge 2}" th:href="@{${url}(page=${page.number - 1})}">前へ</a>
+        </li>
+        <li class="c-paging__item u-d--pc-block">
+            <a class="c-paging__link" th:if="${currentPage ge 3}" th:text="${currentPage - 2}" th:href="@{${url}(page=${page.number - 2})}">2</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link" th:if="${currentPage ge 2}" th:text="${currentPage - 1}" th:href="@{${url}(page=${page.number - 1})}">2</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link is-active" th:text="${currentPage}">3</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link" th:if="${currentPage lt lastPage}" th:text="${currentPage + 1}" th:href="@{${url}(page=${page.number + 1})}">4</a>
+        </li>
+        <li class="c-paging__item u-d--pc-block">
+            <a class="c-paging__link" th:if="${currentPage + 1 lt lastPage}" th:text="${currentPage + 2}" th:href="@{${url}(page=${page.number + 2})}">5</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link is-next" th:if="${currentPage ne lastPage}" th:href="@{${url}(page=${page.number + 1})}">次へ</a>
+        </li>
+        <!--
+            <p class="c-displayedResults p-operationPage__results">
+                <span class="c-displayedResults__current" th:text="|${page.totalElements == 0 ? 0 : page.size * page.number + 1} 件 〜  ${page.size * page.number + page.numberOfElements}件|">1 件 〜 20 件</span>
+                <span class="c-displayedResults__all" th:text="|（${page.totalElements}件中）|">（102件中）</span>
+            </p>
+        -->
+    </ul>
+</th:block>
+
+<th:block th:fragment="pagination_search(result, url)" th:with="currentPage = ${result.page + 1}, lastPage = ${result.totalPage}">
+    <ul class="c-paging u-mt60 u-mt--sp40">
+        <li class="c-paging__item">
+            <a class="c-paging__link is-prev" th:if="${currentPage ge 2}" th:href="@{${url}(page=${result.page - 1})}">前へ</a>
+        </li>
+        <li class="c-paging__item u-d--pc-block">
+            <a class="c-paging__link" th:if="${currentPage ge 3}" th:text="${currentPage - 2}" th:href="@{${url}(page=${result.page - 2})}">2</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link" th:if="${currentPage ge 2}" th:text="${currentPage - 1}" th:href="@{${url}(page=${result.page - 1})}">2</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link is-active" th:text="${currentPage}">3</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link" th:if="${currentPage lt lastPage}" th:text="${currentPage + 1}" th:href="@{${url}(page=${result.page + 1})}">4</a>
+        </li>
+        <li class="c-paging__item u-d--pc-block">
+            <a class="c-paging__link" th:if="${currentPage + 1 lt lastPage}" th:text="${currentPage + 2}" th:href="@{${url}(page=${result.page + 2})}">5</a>
+        </li>
+        <li class="c-paging__item">
+            <a class="c-paging__link is-next" th:if="${currentPage != lastPage}" th:href="@{${url}(page=${result.page + 1})}">次へ</a>
+        </li>
+    </ul>
+</th:block>
+
+<!-- 以下はサンプルとして残す -->
+<th:block>
+    <div>
+        <div>
+            <a th:disabled="${currentPage eq 1}" th:href="@{${url}(page=0)}">1</a>
+
+            <span th:if="${currentPage ge 5}">…</span>
+
+            <a th:if="${currentPage ge 4}" th:text="${currentPage - 2}" th:href="@{${url}(page=${result.page - 2})}">3</a>
+
+            <a th:if="${currentPage ge 3}" th:text="${currentPage - 1}" th:href="@{${url}(page=${result.page - 1})}">4</a>
+
+            <span th:if="${currentPage ge 2}" th:text="${currentPage}" th:onclick="|window.location.href='@{${url}(page=${result.page})}';|">5</span>
+
+            <a th:if="${currentPage lt lastPage}" th:text="${currentPage + 1}" th:href="@{${url}(page=${result.page + 1})}">6</a>
+
+            <a th:if="${currentPage + 1 lt lastPage}" th:text="${currentPage + 2}" th:href="@{${url}(page=${result.page + 2})}">7</a>
+
+            <span th:if="${currentPage + 3 lt lastPage}">…</span>
+
+            <a th:if="${currentPage + 2 lt lastPage}" th:text="${lastPage}" th:href="@{${url}(page=${lastPage - 1})}">11</a>
+        </div>
+    </div>
+</th:block>

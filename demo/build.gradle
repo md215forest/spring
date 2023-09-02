@@ -1,15 +1,35 @@
 plugins {
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
     id 'war'
-    id 'org.springframework.boot' version '3.1.2'
-    id 'io.spring.dependency-management' version '1.1.2'
 }
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
 
-group = 'com.example'
+group = 'jp.co.practice'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
 
-java {
-    sourceCompatibility = '20'
+def env
+if (project.hasProperty('env')) {
+    env = project.env
+}
+sourceSets {
+    main {
+        java {
+        }
+        resources {
+            if (env != null) {
+                println "env build for $env"
+                srcDirs "src/main/resources_$env"
+            }
+        }
+    }
+}
+war {
+    enabled = true
+    archiveFileName = "practice-" + env + "-0.0.1-SNAPSHOT.war"
 }
 
 configurations {
@@ -22,24 +42,227 @@ repositories {
     mavenCentral()
 }
 
+// Doma-Gen用
+configurations {
+    domaGenRuntime
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.session:spring-session-jdbc'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    implementation 'org.apache.commons:commons-lang3'
+    // mapstruct
+    def mapstructVersion = '1.5.3.Final'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    // Doma2
+    def domaVersion = '2.53.2'
+    implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.7.0'
+    implementation "org.seasar.doma:doma-core:${domaVersion}"
+    annotationProcessor "org.seasar.doma:doma-processor:${domaVersion}"
+
+    // doma-gen2 関連
+    domaGenRuntime 'org.seasar.doma:doma-gen:2.28.0'
+    domaGenRuntime('mysql:mysql-connector-java:8.0.32')
+
+    // メール https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.1'
+
+    // Apache POI
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
+
+    // JQuery
+    implementation group: 'org.webjars', name: 'jquery', version: '3.6.4'
+
+    // Thymeleaf Extras Java8time
+    // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-java8time
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.4.RELEASE'
+
+    // Httpクライアントの設定
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
+    // Elasticsearch
+    implementation 'co.elastic.clients:elasticsearch-java:8.6.2'
+    implementation 'jakarta.json:jakarta.json-api:2.1.1'
+
+    // DeepL API
+    implementation 'com.deepl.api:deepl-java:1.1.0'
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+    // feign(HttpClient)
+     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.0")
+    implementation('io.github.openfeign:feign-okhttp:12.2')
+    implementation('io.github.openfeign:feign-jackson:12.2')
+    implementation('io.github.openfeign:feign-slf4j:12.2')
+
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.15.4'
+
+    // Jackson Xml
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
+    // sitemap
+    implementation 'com.google.code:sitemapgen4j:1.0.1'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+}
+
+/**
+ * Doma用
+ */
+def domaResources = ['doma.compile.config', 'META-INF/**/*.sql', 'META-INF/**/*.script']
+
+// Copy the resources referred by the Doma annotation processors to
+// the destinationDir of the compileJava task
+task copyDomaResources(type: Sync) {
+    from sourceSets.main.resources.srcDirs
+    into compileJava.destinationDirectory
+    include domaResources
+}
+
+void clearDir(String dirPath) {
+    group = 'doma-gen'
+    delete dirPath
+}
+
+// Doma-Genによるエンティティ自動生成
+task domaGen {
+    group = 'doma-gen'
+    doLast {
+        def rootPackagePath = "src/main/java/jp/co/practice"
+        def daoPackagePath = "${rootPackagePath}/dao"
+        def sqlDirPath = "src/main/resources/META-INF/jp/co/practice/dao"
+        def rootPackageName = "jp.co.practice"
+        def entityPackageName = "${rootPackageName}.entity"
+        def daoPackageName = "${rootPackageName}.dao"
+        def workDirPath = "work"
+        def workDaoDirPath = "${workDirPath}/dao"
+        def workSqlDirPath = "${workDirPath}/sql"
+
+        // 正規表現でテーブル名のパターンを指定して下さい（全てを対象にする場合は ".*" になります）
+        def tableNamePattern = ".*"
+
+        // Spring Boot 側のデフォルト設定ファイルを取得
+        def appProps = new Properties()
+        file("src/main/resources/application.properties").withInputStream { appProps.load(it) }
+
+        // 作業用ディレクトリを削除する
+        clearDir("${workDirPath}")
+
+        // 現在の Dao インターフェースのバックアップを取得する
+        copy() {
+            from "${daoPackagePath}"
+            into "${workDaoDirPath}/org"
+        }
+
+        // 現在の sqlのバックアップを取得する
+        copy() {
+            from "${sqlDirPath}"
+            into "${workSqlDirPath}/org"
+        }
+
+        // 生成処理定義
+        ant.taskdef(
+                resource: 'domagentask.properties',
+                classpath: configurations.domaGenRuntime.asPath)
+        ant.gen(
+                driverClassName: appProps.getProperty("spring.datasource.driver-class-name"),
+                url: appProps.getProperty("spring.datasource.url"),
+                user: appProps.getProperty("spring.datasource.username"),
+                password: appProps.getProperty("spring.datasource.password"),
+                tableNamePattern: tableNamePattern,
+                dialectName: 'mysql',
+                templatePrimaryDir: "doma-gen/template") {
+            entityConfig(
+                    showDbComment: true,
+                    useListener: false,
+                    entityPropertyClassNamesFile: "domain_mapping.properties",
+                    packageName: "${entityPackageName}")
+            daoConfig(
+                    packageName: "${daoPackageName}")
+            sqlConfig()
+        }
+
+        // daoのバックアップを元に戻す
+        copy() {
+            from "${workDaoDirPath}/replace"
+            into "${daoPackagePath}"
+        }
+
+        // sqlのバックアップを元に戻す
+        copy() {
+            from "${workSqlDirPath}/org"
+            into "${sqlDirPath}"
+        }
+
+        // 元々 dao パッケージ内にあったファイルを元に戻す
+        copy() {
+            from "${workDaoDirPath}/org"
+            into "${daoPackagePath}"
+        }
+
+        // 作業用ディレクトリを削除する
+        clearDir("${workDirPath}")
+
+    }
+    /**
+     * for Spring Boot
+     */
+    bootRun {
+        // for static resource hot reloading
+        //  https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/#running-your-application-reloading-resources
+        sourceResources sourceSets.main
+        // remote debug support @see .vscode/launch.json
+        jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7778"]
+    }
+
+    compileJava {
+        // Depend on the above task
+        dependsOn copyDomaResources
+        options.encoding = 'UTF-8'
+        options.compilerArgs = [
+                '-Adoma.dao.subpackage=impl',
+                '-Adoma.dao.suffix=Impl',
+                // MapStructアノテーションプロセッサ用の設定
+                // タイムスタンプ、バージョン情報、Spring用のDIアノテーションを追加
+                '-Amapstruct.suppressGeneratorTimestamp=true',
+                '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+                '-Amapstruct.defaultComponentModel=spring'
+        ]
+    }
+}
+
+compileTestJava {
+    options.compilerArgs = ['-proc:none']
+}
+
+processResources {
+    exclude domaResources
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

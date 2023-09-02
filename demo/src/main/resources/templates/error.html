@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<!-- headタグ、titleタグ設定 -->
+<div th:replace="~{/fragments/head :: head('エラー')}"></div>
+<div th:replace="~{/fragments/error :: error('500 Internal Server Error', '予期しないエラーが発生しました。')}"></div>
+</html>
